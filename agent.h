@@ -102,12 +102,19 @@ public:
 		opcode({ 0, 1, 2, 3 }) {}
 
 	virtual action take_action(const board& before) {
-		std::shuffle(opcode.begin(), opcode.end(), engine);
+		int max = -1, best_move;
 		for (int op : opcode) {
 			board::reward reward = board(before).slide(op);
-			if (reward != -1) return action::slide(op);
+			if (reward > max) {
+				max = reward;
+				best_move = op;
+			}
 		}
-		return action();
+		
+		if (max != -1)
+			return action::slide(best_move);
+		else
+			return action();
 	}
 
 private:
