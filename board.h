@@ -48,12 +48,6 @@ public:
 	data info() const { return attr; }
 	data info(data dat) { data old = attr; attr = dat; return old; }
 
-	static int fib(int n) {
-		static int fibonacci[] = {0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 
-			377, 610, 987, 1597, 2584, 4181, 6765, 10946, 17711, 28657, 46368, 75025};
-		return fibonacci[n];
-	}
-
 public:
 	bool operator ==(const board& b) const { return tile == b.tile; }
 	bool operator < (const board& b) const { return tile <  b.tile; }
@@ -100,10 +94,9 @@ public:
 				if (tile == 0) continue;
 				row[c] = 0;
 				if (hold) {
-					if (std::abs(tile - hold) == 1 || (tile == 1 && hold == 1)) {
-						tile = std::max(tile, hold) + 1;
-						row[top++] = tile;
-						score += fib(tile);
+					if (tile == hold) {
+						row[top++] = ++tile;
+						score += (1 << tile);
 						hold = 0;
 					} else {
 						row[top++] = hold;
@@ -180,7 +173,7 @@ public:
 		out << "+------------------------+" << std::endl;
 		for (auto& row : b.tile) {
 			out << "|" << std::dec;
-			for (auto t : row) out << std::setw(6) << fib(t);
+			for (auto t : row) out << std::setw(6) << ((1 << t) & -2u);
 			out << "|" << std::endl;
 		}
 		out << "+------------------------+" << std::endl;
